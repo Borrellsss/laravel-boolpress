@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use App\Post;
+use Carbon\Carbon;
+use Illuminate\Support\Collection;
 
 class PostController extends Controller
 {
@@ -14,12 +16,19 @@ class PostController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
-    {
+    public function index(Request $request)
+    {   
+        
+        $confirm_deleted_post = $request->all();
+
         $posts = Post::all();
+        // dd(is_array($posts->item));
+
+        $this->getDifferenceDateData($posts);
 
         $data = [
-            'posts' => $posts
+            'posts' => $posts,
+            'confirm_deleted_post' => $confirm_deleted_post
         ];
 
         return view('admin.posts.index', $data);
@@ -43,9 +52,9 @@ class PostController extends Controller
      */
     public function store(Request $request)
     {
-        $form_data = $request->all();
-
         $request->validate($this->formAuthenticationRules());
+
+        $form_data = $request->all();
 
         $new_post = new Post();
         $new_post->fill($form_data);
@@ -64,6 +73,8 @@ class PostController extends Controller
     {
         $post = Post::findOrFail($id);
 
+        $this->getDifferenceDateData($post);
+
         return view('admin.posts.show', compact('post'));
     }
 
@@ -74,8 +85,10 @@ class PostController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function edit($id)
-    {
-        //
+    {   
+        $post = Post::findOrFail($id);
+
+        return view('admin.posts.edit', compact('post'));
     }
 
     /**
@@ -87,7 +100,21 @@ class PostController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $request->validate($this->formAuthenticationRules());
+
+        $form_data = $request->all();
+
+        $post_to_update = Post::findOrFail($id);
+        
+        if($form_data['title'] !== $post_to_update->title) {
+            $form_data['slug'] = $this->slugPostCheck($form_data['title']);
+        } else {
+            $form_data['slug'] = $post_to_update->slug;
+        }
+
+        $post_to_update->update($form_data);
+
+        return redirect()->route('admin.posts.show', $post_to_update->id);
     }
 
     /**
@@ -98,7 +125,13 @@ class PostController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $post_to_delete = Post::findOrFail($id);
+
+        $post_to_delete->delete();
+
+        $post_deleted = 'y';
+
+        return redirect()->route('admin.posts.index', compact('post_deleted'));
     }
 
     protected function formAuthenticationRules() {
@@ -136,5 +169,17 @@ class PostController extends Controller
 
          // *when the '$existing_slug' is !== null we return '$slug_to_save'
         return $slug_to_save;
+    }
+
+    protected function getDifferenceDateData($data) {
+        $today_date = Carbon::now();
+
+        if($data instanceof Collection) {
+            foreach($data as $data_item) {
+                $data_item['update_difference_in_days'] = $data_item->updated_at->diffInDays($today_date);
+            }
+        } else {
+            $data->update_difference_in_days = $data->updated_at->diffInDays($today_date);
+        }
     }
 }
