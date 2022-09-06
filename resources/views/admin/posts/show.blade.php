@@ -14,9 +14,9 @@
     <div class="mb-3">
         <strong>Updated at:</strong> {{$post->updated_at->format('D d/m/Y - H:i')}}
     </div>
-    @if ($post->update_difference_in_days > 0)
+    @if ($post->time_span > 0)
         <div class="mb-3">
-            Updated: <strong>{{$post->update_difference_in_days}}</strong>  day{{$post->update_difference_in_days > 1 ? 's' : ''}} ago
+            Updated: <strong>{{$post->time_span}}</strong>  day{{$post->time_span > 1 ? 's' : ''}} ago
         </div>
     @endif
     <form action="{{route('admin.posts.destroy', ['post' => $post->id])}}" method="post">

@@ -24,7 +24,7 @@ class PostController extends Controller
         $posts = Post::all();
         // dd(is_array($posts->item));
 
-        $this->getDifferenceDateData($posts);
+        $this->getTimeSpanCalculator($posts, 'days');
 
         $data = [
             'posts' => $posts,
@@ -73,7 +73,7 @@ class PostController extends Controller
     {
         $post = Post::findOrFail($id);
 
-        $this->getDifferenceDateData($post);
+        $this->getTimeSpanCalculator($post, 'days');
 
         return view('admin.posts.show', compact('post'));
     }
@@ -167,19 +167,21 @@ class PostController extends Controller
             $counter++;
         }
 
-         // *when the '$existing_slug' is !== null we return '$slug_to_save'
+        // *when the '$existing_slug' is !== null we return '$slug_to_save'
         return $slug_to_save;
     }
 
-    protected function getDifferenceDateData($data) {
+    protected function getTimeSpanCalculator($first_arg, $second_arg) {
         $today_date = Carbon::now();
+        $diff_function_name = 'diffIn' . ucfirst($second_arg);
 
-        if($data instanceof Collection) {
-            foreach($data as $data_item) {
-                $data_item['update_difference_in_days'] = $data_item->updated_at->diffInDays($today_date);
+        if($first_arg instanceof Collection) {
+            foreach($first_arg as $first_arg_item) {
+                $first_arg_item['time_span'] = $first_arg_item->updated_at->$diff_function_name($today_date);
             }
+
         } else {
-            $data->update_difference_in_days = $data->updated_at->diffInDays($today_date);
+            $first_arg->time_span = $first_arg->updated_at->$diff_function_name($today_date);
         }
     }
 }
