@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use App\Post;
+use App\Category;
 use Carbon\Carbon;
 use Illuminate\Support\Collection;
 
@@ -24,11 +25,12 @@ class PostController extends Controller
         $posts = Post::all();
         // dd(is_array($posts->item));
 
-        $this->getTimeSpanCalculator($posts, 'days');
+        $date_format = $this->getTimeSpanCalculator($posts, 'updated_at', 'second');
 
         $data = [
             'posts' => $posts,
-            'confirm_deleted_post' => $confirm_deleted_post
+            'confirm_deleted_post' => $confirm_deleted_post,
+            'date_format' => $date_format
         ];
 
         return view('admin.posts.index', $data);
@@ -41,7 +43,9 @@ class PostController extends Controller
      */
     public function create()
     {
-        return view('admin.posts.create');
+        $categories = Category::all();
+
+        return view('admin.posts.create', compact('categories'));
     }
 
     /**
@@ -73,9 +77,9 @@ class PostController extends Controller
     {
         $post = Post::findOrFail($id);
 
-        $this->getTimeSpanCalculator($post, 'days');
+        $date_format = $this->getTimeSpanCalculator($post, 'updated_at', 'hour');
 
-        return view('admin.posts.show', compact('post'));
+        return view('admin.posts.show', compact('post', 'date_format'));
     }
 
     /**
@@ -88,7 +92,9 @@ class PostController extends Controller
     {   
         $post = Post::findOrFail($id);
 
-        return view('admin.posts.edit', compact('post'));
+        $categories = Category::all();
+
+        return view('admin.posts.edit', compact('post', 'categories'));
     }
 
     /**
@@ -137,7 +143,8 @@ class PostController extends Controller
     protected function formAuthenticationRules() {
         return [
             'title' => 'required|min:1|max:255',
-            'content' => 'required|min:5|max:60000'
+            'content' => 'required|min:5|max:60000',
+            'category_id' => 'nullable|exists:App\Category,id'
         ];
     }
 
@@ -171,17 +178,20 @@ class PostController extends Controller
         return $slug_to_save;
     }
 
-    protected function getTimeSpanCalculator($first_arg, $second_arg) {
+    protected function getTimeSpanCalculator($first_arg, $second_arg, $third_arg) {
         $today_date = Carbon::now();
-        $diff_function_name = 'diffIn' . ucfirst($second_arg);
+        $column_date_to_compare = $second_arg;
+        $diff_function_name = 'diffIn' . ucfirst($third_arg) . 's';
 
         if($first_arg instanceof Collection) {
             foreach($first_arg as $first_arg_item) {
-                $first_arg_item['time_span'] = $first_arg_item->updated_at->$diff_function_name($today_date);
+                $first_arg_item['time_span'] = $first_arg_item->$column_date_to_compare->$diff_function_name($today_date);
             }
 
         } else {
-            $first_arg->time_span = $first_arg->updated_at->$diff_function_name($today_date);
+            $first_arg->time_span = $first_arg->$column_date_to_compare->$diff_function_name($today_date);
         }
+
+        return $third_arg;
     }
 }
