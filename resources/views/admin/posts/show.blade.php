@@ -3,7 +3,7 @@
 @section('content')
     <h1 class="mb-3">{{$post->title}}</h1>
     <div class="mb-3">
-        <strong>Category: </strong> {{$post->category ? ucFirst($post->category->name) : 'None'}}
+        <strong>Slug:</strong> {{$post->slug}}
     </div>
     <div class="mb-3">
         <strong>Updated at:</strong> {{$post->updated_at->format('D d/m/Y - H:i')}}
@@ -12,7 +12,15 @@
         @endif
     </div>
     <div class="mb-3">
-        <strong>Slug:</strong> {{$post->slug}}
+        <strong>Category: </strong> {{$post->category ? ucFirst($post->category->name) : 'None'}}
+    </div>
+    <div class="mb-3">
+        <strong>Tags: </strong>
+        @forelse ($post->tags as $tag)
+        {{$tag->name}}{{!$loop->last ? ',' : ''}}
+        @empty
+            None
+        @endforelse
     </div>
     <p class="mb-4">
         {{$post->content}}

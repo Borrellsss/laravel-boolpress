@@ -25,6 +25,27 @@
             @enderror
         </div>
         <div class="mb-3">
+            <h6>Tags</h6>
+            @foreach ($tags as $tag)
+                @if ($errors->any())
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="{{$tag->id}}" id="tag-{{$tag->id}}" name="tags[]" {{in_array($tag->id, old('tags', [])) ? 'checked' : ''}}>
+                        <label class="form-check-label" for="flexCheckDefault">
+                            {{$tag->name}}
+                        </label>
+                    </div>
+                @else
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="{{$tag->id}}" id="tag-{{$tag->id}}" name="tags[]" {{$post->tags->contains($tag) ? 'checked' : ''}}>
+                        <label class="form-check-label" for="flexCheckDefault">
+                            {{$tag->name}}
+                        </label>
+                    </div>
+                @endif
+                
+            @endforeach
+        </div>
+        <div class="mb-3">
             <label for="content" class="form-label">Post Content</label>
             <textarea class="form-control mb-2" id="content" name="content" rows="5">{{old('content', $post->content)}}</textarea>
             @error('content')

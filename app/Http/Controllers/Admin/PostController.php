@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use App\Post;
+use App\Tag;
 use App\Category;
 use Carbon\Carbon;
 use Illuminate\Support\Collection;
@@ -44,8 +45,9 @@ class PostController extends Controller
     public function create()
     {
         $categories = Category::all();
+        $tags = Tag::all();
 
-        return view('admin.posts.create', compact('categories'));
+        return view('admin.posts.create', compact('categories', 'tags'));
     }
 
     /**
@@ -58,12 +60,18 @@ class PostController extends Controller
     {
         $request->validate($this->formAuthenticationRules());
 
+        
         $form_data = $request->all();
-
+        
         $new_post = new Post();
         $new_post->fill($form_data);
         $new_post->slug = $this->slugPostCheck($new_post->title);
         $new_post->save();
+
+        if(isset($form_data['tags'])) {
+            $new_post->tags()->sync($form_data['tags']);
+        }
+
         return redirect()->route('admin.posts.show', $new_post->id);
     }
 
@@ -91,10 +99,10 @@ class PostController extends Controller
     public function edit($id)
     {   
         $post = Post::findOrFail($id);
-
+        $tags = Tag::all();
         $categories = Category::all();
 
-        return view('admin.posts.edit', compact('post', 'categories'));
+        return view('admin.posts.edit', compact('post', 'categories', 'tags'));
     }
 
     /**
@@ -120,6 +128,12 @@ class PostController extends Controller
 
         $post_to_update->update($form_data);
 
+        if(isset($form_data['tags'])) {
+            $post_to_update->tags()->sync($form_data['tags']);
+        } else {
+            $post_to_update->tags()->sync([]);
+        }
+
         return redirect()->route('admin.posts.show', $post_to_update->id);
     }
 
@@ -132,7 +146,7 @@ class PostController extends Controller
     public function destroy($id)
     {
         $post_to_delete = Post::findOrFail($id);
-
+        $post_to_delete->tags()->sync([]);
         $post_to_delete->delete();
 
         $post_deleted = 'y';
@@ -144,7 +158,8 @@ class PostController extends Controller
         return [
             'title' => 'required|min:1|max:255',
             'content' => 'required|min:5|max:60000',
-            'category_id' => 'nullable|exists:App\Category,id'
+            'category_id' => 'nullable|exists:App\Category,id',
+            'tags' => 'nullable|exists:App\Tag,id'
         ];
     }
 

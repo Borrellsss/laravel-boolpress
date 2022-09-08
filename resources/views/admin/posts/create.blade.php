@@ -3,6 +3,7 @@
 @section('content')
     <form action="{{route('admin.posts.store')}}" method="POST">
         @csrf
+
         <div class="mb-3">
             <label for="title" class="form-label">Post Title</label>
             <input type="text" class="form-control mb-2" id="title" name="title" value="{{old('title')}}">
@@ -21,6 +22,17 @@
             @error('category_id')
                 <div class="alert alert-danger">{{ $message }}</div>
             @enderror
+        </div>
+        <div class="mb-3">
+            <h6>Tags</h6>
+            @foreach ($tags as $tag)
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="{{$tag->id}}" id="tag-{{$tag->id}}" name="tags[]" {{in_array($tag->id, old('tags', [])) ? 'checked' : ''}}>
+                    <label class="form-check-label" for="flexCheckDefault">
+                        {{$tag->name}}
+                    </label>
+                </div>
+            @endforeach
         </div>
         <div class="mb-3">
             <label for="content" class="form-label">Post Content</label>
