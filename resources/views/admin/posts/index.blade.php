@@ -25,9 +25,9 @@
                         <form action="{{route('admin.posts.destroy', ['post' => $post->id])}}" method="post">
                             @csrf
                             @method('DELETE')
-                            <a href="{{route('admin.posts.show', ['post' => $post->id])}}" class="btn btn-info">Show Post</a>
-                            <a href="{{route('admin.posts.edit', ['post' => $post->id])}}" class="btn btn-warning">Modify Post</a>
-                            <input class="btn btn-danger" type="submit" value="Delete" onClick="return confirm('Do you really want to eliminate this Post?')">
+                            <a href="{{route('admin.posts.show', ['post' => $post->id])}}" class="btn btn-primary btn-sm">Show Post</a>
+                            <a href="{{route('admin.posts.edit', ['post' => $post->id])}}" class="btn btn-warning btn-sm">Modify Post</a>
+                            <input class="btn btn-danger btn-sm" type="submit" value="Delete" onClick="return confirm('Do you really want to eliminate this Post?')">
                         </form>
                     </div>
                 </div>
