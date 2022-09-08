@@ -17,7 +17,7 @@
     <div class="mb-3">
         <strong>Tags: </strong>
         @forelse ($post->tags as $tag)
-        {{$tag->name}}{{!$loop->last ? ',' : ''}}
+            {{$tag->name}}{{!$loop->last ? ',' : ''}}
         @empty
             None
         @endforelse

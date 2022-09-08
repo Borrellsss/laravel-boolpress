@@ -14,13 +14,21 @@
                     <div class="card-body">
                         <h4 class="card-title">{{$post->title}}</h4>
                         <div class="mb-3">
-                            <strong>Category: </strong> {{$post->category ? ucFirst($post->category->name) : 'None'}}
-                        </div>
-                        <div class="mb-3">
                             <strong>Updated at:</strong> {{$post->updated_at->format('D d/m/Y - H:i')}}
                             @if ($post->time_span > 0)
                                 / <strong>{{$post->time_span}}</strong>  {{$post->time_span > 1 ? $date_format . 's' : $date_format}} ago
                             @endif
+                        </div>
+                        <div class="mb-3">
+                            <strong>Category: </strong> {{$post->category ? ucFirst($post->category->name) : 'None'}}
+                        </div>
+                        <div class="mb-3">
+                            <strong>Tags: </strong>
+                            @forelse ($post->tags as $tag)
+                                {{$tag->name}}{{!$loop->last ? ',' : ''}}
+                            @empty
+                                None
+                            @endforelse
                         </div>
                         <form action="{{route('admin.posts.destroy', ['post' => $post->id])}}" method="post">
                             @csrf
