@@ -10,6 +10,7 @@
 import Post from '../components/Post.vue';
 
 export default {
+    name: "App",
     components: {
         Post
     }

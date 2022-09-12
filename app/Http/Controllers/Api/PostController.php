@@ -9,11 +9,11 @@ use App\Post;
 class PostController extends Controller
 {
     public function index() {
-        $posts = Post::all();
+        $posts = Post::paginate(6);
 
         $data = [
-            'request' => true,
-            'response' => $posts
+            'success' => true,
+            'results' => $posts
         ];
 
         return response()->json($data);
