@@ -1,16 +1,16 @@
 <template>
     <section>
-        <PostsComonent/>
+        <PostsSectionComponent/>
     </section>
 </template>
 
 <script>
-import PostsComonent from "../components/PostsComponent.vue";
+import PostsSectionComponent from "../components/PostsSectionComponent.vue";
 
 export default {
     name: "BlogPage", 
     components: {
-        PostsComonent
+        PostsSectionComponent
     }
 }
 </script>

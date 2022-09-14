@@ -6,6 +6,7 @@ Vue.use(VueRouter);
 import HomePage from "./pages/HomePage.vue";
 import AboutPage from "./pages/AboutPage.vue";
 import BlogPage from "./pages/BlogPage.vue";
+import PostDetailsPage from "./pages/PostDetailsPage.vue";
 import ErrorPage from "./pages/ErrorPage.vue";
 
 const router = new VueRouter({
@@ -25,6 +26,11 @@ const router = new VueRouter({
             path: "/blog",
             name: "blog",
             component: BlogPage
+        },
+        {
+            path: "/:slug",
+            name: "post-details",
+            component: PostDetailsPage
         },
         {
             path: "/*",
