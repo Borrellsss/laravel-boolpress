@@ -54624,7 +54624,7 @@ var router = new vue_router__WEBPACK_IMPORTED_MODULE_1__["default"]({
     name: "blog",
     component: _pages_BlogPage_vue__WEBPACK_IMPORTED_MODULE_4__["default"]
   }, {
-    path: "/:slug",
+    path: "/blog/:slug",
     name: "post-details",
     component: _pages_PostDetailsPage_vue__WEBPACK_IMPORTED_MODULE_5__["default"]
   }, {
