@@ -1,7 +1,7 @@
 @extends('layouts.dashboard')
 
 @section('content')
-    <form action="{{route('admin.posts.update', ['post' => $post->id])}}" method="POST">
+    <form action="{{route('admin.posts.update', ['post' => $post->id])}}" method="POST" enctype="multipart/form-data">
         @csrf
         @method('PUT')
 
@@ -21,6 +21,21 @@
                 @endforeach
             </select>
             @error('category_id')
+                <div class="alert alert-danger">{{ $message }}</div>
+            @enderror
+        </div>
+        <div class="mb-3">
+            <label for="post-cover" class="form-label">Post Cover</label>
+            <input class="form-control mb-3" type="file" id="post-cover" name="post-cover">
+            @if ($post->cover)
+                <div class="mb-3">
+                    Current Post Cover:
+                    <div>
+                        <img class="w-50" src="{{asset('storage/' . $post->cover)}}" alt="">
+                    </div>
+                </div>
+            @endif
+            @error('post-cover')
                 <div class="alert alert-danger">{{ $message }}</div>
             @enderror
         </div>

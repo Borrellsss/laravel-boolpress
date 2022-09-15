@@ -1,7 +1,7 @@
 @extends('layouts.dashboard')
 
 @section('content')
-    <form action="{{route('admin.posts.store')}}" method="POST">
+    <form action="{{route('admin.posts.store')}}" method="POST" enctype="multipart/form-data">
         @csrf
 
         <div class="mb-3">
@@ -20,6 +20,13 @@
                 @endforeach
             </select>
             @error('category_id')
+                <div class="alert alert-danger">{{ $message }}</div>
+            @enderror
+        </div>
+        <div class="mb-3">
+            <label for="post-cover" class="form-label">Post Cover</label>
+            <input class="form-control" type="file" id="post-cover" name="post-cover">
+            @error('post-cover')
                 <div class="alert alert-danger">{{ $message }}</div>
             @enderror
         </div>

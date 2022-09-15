@@ -4,6 +4,9 @@
             <h5 class="card-title">
                 {{post.title}}
             </h5>
+            <div v-if="post.cover">
+                <img class="w-100" :src="post.cover" :alt="post.title">
+            </div>
             <p class="card-text">
                 {{post.content.length > 80 ? post.content.slice(0, 80) + "..." : post.content}}
             </p>

@@ -2088,7 +2088,14 @@ __webpack_require__.r(__webpack_exports__);
 
     axios.get("/api/posts/".concat(this.$route.params.slug)).then(function (response) {
       console.log(response.data.results);
-      _this.post = response.data.results;
+
+      if (response.data.success) {
+        _this.post = response.data.results;
+      } else {
+        _this.$router.push({
+          name: 'error'
+        });
+      }
     });
   }
 });
@@ -2178,7 +2185,13 @@ var render = function render() {
     staticClass: "card-body"
   }, [_c("h5", {
     staticClass: "card-title"
-  }, [_vm._v("\n            " + _vm._s(_vm.post.title) + "\n        ")]), _vm._v(" "), _c("p", {
+  }, [_vm._v("\n            " + _vm._s(_vm.post.title) + "\n        ")]), _vm._v(" "), _vm.post.cover ? _c("div", [_c("img", {
+    staticClass: "w-100",
+    attrs: {
+      src: _vm.post.cover,
+      alt: _vm.post.title
+    }
+  })]) : _vm._e(), _vm._v(" "), _c("p", {
     staticClass: "card-text"
   }, [_vm._v("\n            " + _vm._s(_vm.post.content.length > 80 ? _vm.post.content.slice(0, 80) + "..." : _vm.post.content) + "\n        ")]), _vm._v(" "), _c("router-link", {
     staticClass: "btn btn-primary",
@@ -2219,7 +2232,7 @@ var render = function render() {
   }, [_c("h2", {
     staticClass: "mb-4"
   }, [_vm._v("Posts List")]), _vm._v(" "), _c("div", {
-    staticClass: "row row-cols-1"
+    staticClass: "row row-cols-2"
   }, _vm._l(_vm.posts, function (singlePost) {
     return _c("div", {
       key: singlePost.id,
@@ -2441,7 +2454,15 @@ var render = function render() {
     return _c("span", {
       key: tag.id
     }, [_vm._v(_vm._s(_vm.post.tags[_vm.post.tags.length - 1] !== tag ? "".concat(tag.name, ", ") : tag.name))]);
-  })], 2) : _vm._e(), _vm._v(" "), _c("p", [_vm._v(_vm._s(_vm.post.content))])]) : _c("div", [_vm._v("\n        caricamento\n    ")])]);
+  })], 2) : _vm._e(), _vm._v(" "), _vm.post.cover ? _c("div", {
+    staticClass: "mb-3"
+  }, [_c("img", {
+    staticClass: "w-50",
+    attrs: {
+      src: _vm.post.cover,
+      alt: _vm.post.title
+    }
+  })]) : _vm._e(), _vm._v(" "), _c("p", [_vm._v(_vm._s(_vm.post.content))])]) : _c("div", [_vm._v("\n        caricamento\n    ")])]);
 };
 
 var staticRenderFns = [];

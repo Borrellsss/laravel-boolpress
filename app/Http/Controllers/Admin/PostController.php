@@ -10,6 +10,7 @@ use App\Tag;
 use App\Category;
 use Carbon\Carbon;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Storage;
 
 class PostController extends Controller
 {
@@ -60,9 +61,13 @@ class PostController extends Controller
     {
         $request->validate($this->formAuthenticationRules());
 
-        
         $form_data = $request->all();
         
+        if(isset($form_data['post-cover'])) {
+            $image_path = Storage::put('post-covers', $form_data['post-cover']);
+            $form_data['cover'] = $image_path;
+        }
+
         $new_post = new Post();
         $new_post->fill($form_data);
         $new_post->slug = $this->slugPostCheck($new_post->title);
@@ -119,6 +124,14 @@ class PostController extends Controller
         $form_data = $request->all();
 
         $post_to_update = Post::findOrFail($id);
+
+        if(isset($form_data['post-cover'])) {
+            if($post_to_update->cover) {
+                Storage::delete($post_to_update->cover);
+            }
+            $image_path = Storage::put('post-covers', $form_data['post-cover']);
+            $form_data['cover'] = $image_path;
+        }
         
         if($form_data['title'] !== $post_to_update->title) {
             $form_data['slug'] = $this->slugPostCheck($form_data['title']);
@@ -146,6 +159,11 @@ class PostController extends Controller
     public function destroy($id)
     {
         $post_to_delete = Post::findOrFail($id);
+
+        if($post_to_delete->cover) {
+            Storage::delete($post_to_delete->cover);
+        }
+
         $post_to_delete->tags()->sync([]);
         $post_to_delete->delete();
 
@@ -159,7 +177,8 @@ class PostController extends Controller
             'title' => 'required|min:1|max:255',
             'content' => 'required|min:5|max:60000',
             'category_id' => 'nullable|exists:App\Category,id',
-            'tags' => 'nullable|exists:App\Tag,id'
+            'tags' => 'nullable|exists:App\Tag,id',
+            'post-cover' => 'nullable|image|max:1050'
         ];
     }
 

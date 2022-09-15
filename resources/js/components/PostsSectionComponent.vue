@@ -2,7 +2,7 @@
     <section>
         <div class="container">
             <h2 class="mb-4">Posts List</h2>
-            <div class="row row-cols-1">
+            <div class="row row-cols-2">
                 <div class="col" v-for="singlePost in posts" :key="singlePost.id">
                     <PostCardComponent :post="singlePost"/>
                 </div>

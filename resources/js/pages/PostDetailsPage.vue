@@ -10,6 +10,9 @@
                 <strong>Tags:</strong>
                 <span v-for="tag in post.tags" :key="tag.id">{{post.tags[post.tags.length - 1] !== tag ? `${tag.name}, ` : tag.name}}</span>
             </div>
+            <div v-if="post.cover" class="mb-3">
+                <img class="w-50" :src="post.cover" :alt="post.title">
+            </div>
             <p>{{post.content}}</p>
         </div>
         <div v-else>
@@ -36,7 +39,11 @@ export default {
         axios.get(`/api/posts/${this.$route.params.slug}`).then((response) => {
             console.log(response.data.results);
 
-            this.post = response.data.results;
+            if(response.data.success) {
+                this.post = response.data.results;
+            } else {
+                this.$router.push({name: 'error'});
+            }
         });
     }
 }

@@ -22,6 +22,14 @@
             None
         @endforelse
     </div>
+    @if ($post->cover)
+        <div class="mb-3">
+            <strong>Post Cover:</strong>
+            <div>
+                <img class="w-50" src="{{asset('storage/' . $post->cover)}}" alt="">
+            </div>
+        </div>
+    @endif
     <p class="mb-4">
         {{$post->content}}
     </p>
