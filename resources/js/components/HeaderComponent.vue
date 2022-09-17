@@ -10,7 +10,7 @@
                     </li> -->
                     <li v-for="(link,index) in headerLinks" :key="index" class="nav-item">
                         <router-link :to="{'name': link.name}" class="nav-link">
-                            {{link.name.toUpperCase()}}
+                            {{link.label.toUpperCase()}}
                         </router-link>
                     </li>
                 </ul>
@@ -30,13 +30,20 @@ export default {
         return {
             headerLinks: [
                 {
-                    name: 'home'
+                    name: 'home',
+                    label: 'home',
                 },
                 {
-                    name: 'about'
+                    name: 'about',
+                    label: 'about',
                 },
                 {
-                    name: 'blog'
+                    name: 'blog',
+                    label: 'blog',
+                },
+                {
+                    name: 'contact-us',
+                    label: 'contact us',
                 },
             ]
         }

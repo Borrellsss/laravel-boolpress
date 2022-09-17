@@ -11,6 +11,8 @@ use App\Category;
 use Carbon\Carbon;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\NewPostEmail;
 
 class PostController extends Controller
 {
@@ -77,6 +79,8 @@ class PostController extends Controller
             $new_post->tags()->sync($form_data['tags']);
         }
 
+        Mail::to('admintest@mail.it')->send(new NewPostEmail($new_post));
+        
         return redirect()->route('admin.posts.show', $new_post->id);
     }
 
